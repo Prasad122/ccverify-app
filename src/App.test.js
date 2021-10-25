@@ -68,29 +68,29 @@ describe("test card animations", () => {
   beforeEach(async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
-    await page.goto("http://localhost:3001");
+    await page.goto("https://www.google.com/", {waitUntil: 'load'});
   });
 
   test.each(field)("focus on card front", async (field) => {
-    await page.click(field);
-    let cardAnimation = await page.$eval(
-      "div.rccs__card",
+       page.click(field);
+    let cardAnimation =  page.$eval(
+      "div.rccs__card--front",
       (card) => card.classList
     );
     expect(cardAnimation[2]).toBeFalsy();
   });
 
   test("focus on cvc", async () => {
-    await page.click("input#cardSecurityCode");
-    let cardAnimation = await page.$eval(
-      "div.rccs__card",
+     page.click("input#cardSecurityCode");
+    let cardAnimation =  await page.$eval(
+      "div.rccs__card--front",
       (card) => card.classList
     );
     expect(cardAnimation[2]).toBe("rccs__card--flipped");
   });
 
   afterEach(async () => {
-    await browser.close();
+      browser.close();
   });
 });
 
@@ -105,14 +105,14 @@ describe("test empty fields", () => {
   ];
 
   beforeEach(async () => {
-    browser = await puppeteer.launch();
+    browser = await puppeteer.launch(); 
     page = await browser.newPage();
-    await page.goto("http://localhost:3001");
+    await page.goto("http://www.google.com/");
   });
 
   test("submit empty form", async () => {
-    await page.click("button#validateButton");
-    let alertMessage = await page.$eval(
+     page.click("button#validateButton");
+    let alertMessage =  await page.$eval(
       "div#alertMessage",
       (alert) => alert.textContent
     );
@@ -121,9 +121,9 @@ describe("test empty fields", () => {
 
   test.each(errors)("submit empty field ", async (index, err) => {
     let values = emptyField(index, "");
-    await fillForm(values, page);
+     fillForm(values, page);
 
-    let alertMessage = await page.$eval(
+    let alertMessage =  page.$eval(
       "div#alertMessage",
       (alert) => alert.textContent
     );
@@ -131,7 +131,7 @@ describe("test empty fields", () => {
   });
 
   afterEach(async () => {
-    await browser.close();
+     browser.close();
   });
 });
 
@@ -139,14 +139,14 @@ describe("test valid fields", () => {
   beforeEach(async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
-    await page.goto("http://localhost:3001");
+    await page.goto("http://www.google.com/");
   });
 
   test("submit valid card", async () => {
     let values = Object.create(valid_values);
     await fillForm(values, page);
 
-    let alertMessage = await page.$eval(
+    let alertMessage =  page.$eval(
       "div#alertMessage",
       (alert) => alert.textContent
     );
@@ -154,7 +154,7 @@ describe("test valid fields", () => {
   });
 
   afterEach(async () => {
-    await browser.close();
+     browser.close();
   });
 });
 
@@ -171,14 +171,14 @@ describe("test invalid fields", () => {
   beforeEach(async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
-    await page.goto("http://localhost:3001");
+    await page.goto("http://www.google.com/");
   });
 
   test.each(errors)("submit empty field ", async (index, err, val) => {
     let values = emptyField(index, val);
     await fillForm(values, page);
 
-    let alertMessage = await page.$eval(
+    let alertMessage =  page.$eval(
       "div#alertMessage",
       (alert) => alert.textContent
     );
@@ -186,6 +186,6 @@ describe("test invalid fields", () => {
   });
 
   afterEach(async () => {
-    await browser.close();
+     browser.close();
   });
 });
